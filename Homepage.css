@@ -1,0 +1,27 @@
+table {
+  border-collapse: collapse;
+  width: 100%;
+}
+
+th, td {
+  border: 1px solid #ccc;
+  padding: 10px;
+  text-align: left;
+}
+
+th {
+  background-color: #f2f2f2;
+}
+
+#addItemBtn {
+     display: block;
+     border-radius: 10px;
+     width: 200px;
+     font-size: 20px;
+}
+
+#addItemBtn:hover{
+    box-shadow: 10px 5px 5px;
+    text-align: center;
+    font-size: 22px;
+}

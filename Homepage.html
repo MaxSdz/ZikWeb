@@ -1,0 +1,218 @@
+<!DOCTYPE html>
+<html lang="fr">
+
+<head>
+    <meta charset="UTF-8">
+    <!-- Nom affiché sure l'onglet du navigateur -->
+    <title>ZikSite</title> 
+    <link rel="stylesheet" href="Homepage.css">
+    <!-- TODO: Tout balancer dans le CSS -->
+    <style>
+        body {
+            background-color: 0x00;
+            font-family: Arial, sans-serif;
+        }
+
+        table {
+            border-collapse: collapse;
+            width: 80%;
+            margin: 20px auto;
+        }
+
+        th, td {
+            border: 1px solid #ccc;
+            padding: 10px;
+            text-align: center;
+        }
+
+        th {
+            background-color: #f2f2f2;
+        }
+
+        h1 {
+            text-align: center;
+            font-family: "Times New Roman", Times, serif;
+            font-size: 24px;
+        }
+
+        .incrementBtn {
+            padding: 5px 10px;
+            margin: 0 5px;
+            cursor: pointer;
+        }
+
+        #addItemBtn {
+            display: block;
+            margin: 20px auto;
+            padding: 10px 20px;
+            font-size: 16px;
+            cursor: pointer;
+        }
+
+        /* Popup styles */
+        #popupOverlay {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.5);
+            justify-content: center;
+            align-items: center;
+        }
+
+        #popup {
+            background: white;
+            padding: 20px;
+            border-radius: 8px;
+            width: 300px;
+            text-align: center;
+        }
+
+        #popup input {
+            width: 90%;
+            padding: 8px;
+            margin: 10px 0;
+        }
+
+        #popup button {
+            margin: 5px;
+        }
+    </style>
+</head>
+
+<body>
+    <!-- TODO: A faire plus propre -->
+    <h1>ZikSite</h1> 
+
+    <button id="addItemBtn" onclick="openPopUp()">Ajouter un item</button>
+
+    <table id="matosTableID">
+        <thead>
+            <tr>
+                <th>Équipement</th>
+                <th>Référence</th>
+                <th>Marque</th>
+                <th>État</th>
+                <th>Quantité</th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr>
+                <td>Façade</td>
+                <td>XSD 1000 PRO Turbo+</td>
+                <td>Thomann</td>
+                <td>Neuf</td>
+                <td class="quantityClass">
+                <span>1</span>
+                <button class="incrementBtn" onclick="modifyQuantity(this, -1)">–</button>
+                <button class="incrementBtn" onclick="modifyQuantity(this, 1)">+</button>
+                </td>
+            </tr>
+            <tr>
+                <td>Câble</td>
+                <td>Jack/XLR 2m</td>
+                <td>Neutrik</td>
+                <td>Neuf</td>
+                <td class="quantityClass">
+                <span>25</span>
+                <button class="incrementBtn" onclick="modifyQuantity(this, -1)">–</button>
+                <button class="incrementBtn" onclick="modifyQuantity(this, 1)">+</button>
+                </td>
+            </tr>
+        </tbody>
+    </table>
+
+    <!-- Fenêtre contextuelle -->
+    <div id="popupOverlay">
+        <div id="popup">
+        <h3>Ajouter un nouveau produit</h3>
+        <input type="text" id="equipementTextID" placeholder="Type d'équipement" />
+        <input type="text" id="refTextID" placeholder="Référence du produit" />
+        <input type="text" id="brandTextID" placeholder="Marque" />
+        <input type="text" id="statusTextID" placeholder="État" />
+        <input type="number" id="quantityNumberID" placeholder="Quantité" min="0" />
+        <br />
+        <button onclick="add()">Valider</button>
+        <button onclick="closePopup()">Annuler</button>
+        </div>
+    </div>
+
+    <script>
+        function modifyQuantity(button, delta) {
+        const span = button.closest('.quantityClass').querySelector('span');
+        let quantity = parseInt(span.textContent);
+        quantity += delta;
+        if (quantity < 0) quantity = 0;
+        span.textContent = quantity;
+    }
+
+        function openPopUp() {
+            document.getElementById("popupOverlay").style.display = "flex";
+        }
+
+        function closePopup() {
+            document.getElementById("popupOverlay").style.display = "none";
+            document.getElementById("equipementTextID").value = "";
+            document.getElementById("refTextID").value = "";
+            document.getElementById("brandTextID").value = "";
+            document.getElementById("statusTextID").value = "";
+            document.getElementById("quantityNumberID").value = "";
+        }
+
+        function add() {
+            const equipment = document.getElementById("equipementTextID").value.trim();
+            const reference = document.getElementById("refTextID").value.trim();
+            const brand = document.getElementById("brandTextID").value.trim();
+            const status = document.getElementById("statusTextID").value.trim();
+            let quantity = parseInt(document.getElementById("quantityNumberID").value);
+
+            if (!equipment) {
+                alert("Veuillez entrer un nom de produit.");
+                return;
+            }
+
+            if (!reference) {
+                alert("Veuillez entrer une référence de produit.");
+                return;
+            }
+
+            if (!brand) {
+                alert("Veuillez entrer une marque.");
+                return;
+            }
+
+            if (!status) {
+                alert("Veuillez entrer un état.");
+                return;
+            }
+
+            if (isNaN(quantity) || quantity < 0) {
+                alert("Veuillez entrer une quantité valide.");
+                return;
+            }
+
+            const matosTable = document.getElementById("matosTableID").getElementsByTagName('tbody')[0];
+
+            const newLine = document.createElement("tr");
+            newLine.innerHTML = `
+                <td>${equipment}</td>
+                <td>${reference}</td>
+                <td>${brand}</td>
+                <td>${status}</td>
+                <td class="quantityClass">
+                <span>${quantity}</span>
+                <button class="incrementBtn" onclick="modifyQuantity(this, -1)">–</button>
+                <button class="incrementBtn" onclick="modifyQuantity(this, 1)">+</button>
+                </td>
+      `;
+            matosTable.appendChild(newLine);
+
+            closePopup();
+        }
+    </script>
+
+</body>
+
+</html>
